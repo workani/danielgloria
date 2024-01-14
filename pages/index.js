@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import { FaPlay, FaStop } from 'react-icons/fa';
 
 export default function Component() {
   const [images, setImages] = useState([
@@ -17,11 +18,12 @@ export default function Component() {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [audio, setAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
   useEffect(() => {
-    const newAudio = new Audio('/song.mp3');
+    const newAudio = new Audio('/song.aac');
     newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
       setSongTime({ ...songTime, duration: newAudio.duration });
@@ -29,8 +31,9 @@ export default function Component() {
       newAudio.play().catch(error => console.error("Ошибка автовоспроизведения:", error));
     });
 
-    newAudio.addEventListener('error', () => {
-      console.error("Ошибка при загрузке аудиофайла");
+    newAudio.addEventListener('error', (e) => {
+      console.error("Error with audio playback:", e);
+      console.error("Error code:", e.target.error.code);
     });
 
     return () => {
@@ -43,7 +46,8 @@ export default function Component() {
     if (audio) {
       const playAudio = async () => {
         try {
-          await audio.play()
+          await audio.play();
+          setIsPlaying(true);
         } catch (error) {
           console.error("Audio play error:", error);
         }
@@ -53,11 +57,16 @@ export default function Component() {
         setSongTime({ currentTime: audio.currentTime, duration: audio.duration });
       };
 
+      const handleAudioEnd = () => setIsPlaying(false);
+
       audio.addEventListener('canplaythrough', playAudio);
       audio.addEventListener('timeupdate', updateTime);
+      audio.addEventListener('ended', handleAudioEnd);
+
       return () => {
         audio.removeEventListener('canplaythrough', playAudio);
         audio.removeEventListener('timeupdate', updateTime);
+        audio.removeEventListener('ended', handleAudioEnd);
       }
     }
   }, [audio]);
@@ -81,6 +90,18 @@ export default function Component() {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
+  const togglePlay = () => {
+    if (audio) {
+      if (audio.paused) {
+        audio.play().catch((error) => console.error("Error playing audio:", error));
+        setIsPlaying(true);
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+      }
+    }
   };
 
   return (
@@ -153,14 +174,11 @@ export default function Component() {
                 <p className="text-gray-500">{formatTime(songTime.duration)}</p>
               </div>
               <button
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition duration-300 mt-4"
-                onClick={() => {
-                  if (audio) {
-                    audio.play().catch((error) => console.error("Error playing audio:", error));
-                  }
-                }}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition duration-300 mt-4 flex items-center justify-center"
+                onClick={togglePlay}
               >
-                Play Song
+                {isPlaying ? <FaStop size={20} /> : <FaPlay size={20} />}
+                <span className="ml-2">{isPlaying ? 'Stop' : 'Play'} Song</span>
               </button>
             </div>
           </div>
