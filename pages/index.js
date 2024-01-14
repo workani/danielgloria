@@ -19,7 +19,6 @@ export default function Component() {
   const [audio, setAudio] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
-  const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
   useEffect(() => {
     const newAudio = new Audio('https://danielgloria.vercel.app/song.aac');
@@ -57,20 +56,7 @@ export default function Component() {
     }
   }, [audio]);
 
-  useEffect(() => {
-    const calculateDuration = () => {
-      const startDate = new Date('2020-01-01');
-      const currentDate = new Date();
-      const differenceInTime = currentDate.getTime() - startDate.getTime();
-      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-      return {
-        months: Math.floor(differenceInDays / 30),
-        days: Math.floor(differenceInDays % 30)
-      };
-    };
 
-    setRelationshipDuration(calculateDuration());
-  }, []);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -94,6 +80,40 @@ export default function Component() {
     }
   };
   
+ 
+
+  // Define the state to hold the relationship duration
+  const [relationshipDuration, setRelationshipDuration] = useState({
+    days: 'XX',
+    hours: 'XX',
+    minutes: 'XX',
+  });
+
+  // Function to calculate the time difference
+  const calculateTimeLeft = () => {
+    const startDate = new Date('2023-09-29'); // Replace with your relationship start date
+    const currentDate = new Date();
+    const differenceInTime = currentDate - startDate;
+
+    return {
+      days: Math.floor(differenceInTime / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((differenceInTime / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((differenceInTime / 1000 / 60) % 60),
+    };
+  };
+
+  // Effect hook to update the relationship duration
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRelationshipDuration(calculateTimeLeft());
+    }, 60000); // Update every minute
+
+    // Set the initial duration immediately on component mount
+    setRelationshipDuration(calculateTimeLeft());
+
+    return () => clearInterval(timer);
+  }, []);
+
 
 
   return (
@@ -177,14 +197,28 @@ export default function Component() {
         </div>
       </section>
 
-      {/* Relationship Timeline Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32">
+        {/* Relationship Timeline Section */}
+      
+        <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">Our Relationship Timeline</h2>
-          <div className="flex flex-col items-center justify-center bg-white p-8 rounded-lg">
-            <h3 className="text-2xl font-bold text-red-500">Together for:</h3>
-            <p className="text-xl text-gray-700">{relationshipDuration.months} Months and {relationshipDuration.days} Days</p>
-          </div>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">We are together for:</h2>
+      
+          <main className="flex flex-col items-center justify-center space-y-5 sm:space-y-10">
+            <div className="countdown-container grid grid-cols-2 sm:grid-cols-3 text-center gap-4 justify-center">
+              <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
+              <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.days}</p>
+                <p className="text-xl sm:text-2xl text-gray-300">Days</p>
+              </div>
+              <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
+                <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.hours}</p>
+                <p className="text-xl sm:text-2xl text-gray-300">Hours</p>
+              </div>
+              <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
+                <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.minutes}</p>
+                <p className="text-xl sm:text-2xl text-gray-300">Minutes</p>
+              </div>
+            </div>
+          </main>s
         </div>
       </section>
     </main>
