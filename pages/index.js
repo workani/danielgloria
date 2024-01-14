@@ -22,7 +22,7 @@ export default function Component() {
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
   useEffect(() => {
-    const newAudio = new Audio('https://danielgloria.vercel.app/song.');
+    const newAudio = new Audio('https://danielgloria.vercel.app/song.aac');
     newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
       setSongTime({ ...songTime, duration: newAudio.duration });
