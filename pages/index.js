@@ -135,7 +135,7 @@ const [relationshipDuration, setRelationshipDuration] = useState({
 
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-pink-300 via-red-500 to-yellow-500">
+     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-black to-purple-900">
       {/* Photo Gallery Section */}
       <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
