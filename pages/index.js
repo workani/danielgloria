@@ -87,12 +87,12 @@ const calculateMonths = (startDate, endDate) => {
 const calculateRemainingDays = (startDate, months) => {
   const adjustedDate = new Date(startDate);
   adjustedDate.setMonth(adjustedDate.getMonth() + months);
-  adjustedDate.setDate(startDate.getDate()); // Ensure we compare the same day of the month
   const currentDate = new Date();
 
-  // If the adjusted date is in the future, we've gone one month too far
-  if (adjustedDate > currentDate) {
-    adjustedDate.setMonth(adjustedDate.getMonth() - 1); // Step back one month
+  // Если день месяца в adjustedDate больше, чем в startDate, это означает, что мы перешли на следующий месяц
+  // Например, начальная дата 31 января + 1 месяц = 28 (или 29) февраля, а не 31 февраля
+  if (adjustedDate.getDate() !== startDate.getDate()) {
+    adjustedDate.setDate(0); // Переходим к последнему дню предыдущего месяца
   }
 
   const differenceInTime = currentDate - adjustedDate;
