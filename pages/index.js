@@ -21,7 +21,7 @@ export default function Component() {
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
 
   useEffect(() => {
-    const newAudio = new Audio('https://danielgloria.vercel.app/song.aac');
+    const newAudio = new Audio('/song.aac');
     newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
       setSongTime({ ...songTime, duration: newAudio.duration });
