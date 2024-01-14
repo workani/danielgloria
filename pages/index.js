@@ -21,10 +21,22 @@ export default function Component() {
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const newAudio = new Audio('/song.mp3');
+    const newAudio = new Audio('/song.mp3');
+    newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
-    }
+      setSongTime({ ...songTime, duration: newAudio.duration });
+      // Attempt to autoplay
+      newAudio.play().catch(error => console.error("Ошибка автовоспроизведения:", error));
+    });
+
+    newAudio.addEventListener('error', () => {
+      console.error("Ошибка при загрузке аудиофайла");
+    });
+
+    return () => {
+      newAudio.removeEventListener('loadeddata', () => {});
+      newAudio.removeEventListener('error', () => {});
+    };
   }, []);
 
   useEffect(() => {
@@ -36,14 +48,17 @@ export default function Component() {
           console.error("Audio play error:", error);
         }
       };
-      playAudio();
 
       const updateTime = () => {
         setSongTime({ currentTime: audio.currentTime, duration: audio.duration });
       };
 
+      audio.addEventListener('canplaythrough', playAudio);
       audio.addEventListener('timeupdate', updateTime);
-      return () => audio.removeEventListener('timeupdate', updateTime);
+      return () => {
+        audio.removeEventListener('canplaythrough', playAudio);
+        audio.removeEventListener('timeupdate', updateTime);
+      }
     }
   }, [audio]);
 
@@ -137,6 +152,16 @@ export default function Component() {
                 <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
                 <p className="text-gray-500">{formatTime(songTime.duration)}</p>
               </div>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition duration-300 mt-4"
+                onClick={() => {
+                  if (audio) {
+                    audio.play().catch((error) => console.error("Error playing audio:", error));
+                  }
+                }}
+              >
+                Play Song
+              </button>
             </div>
           </div>
         </div>
