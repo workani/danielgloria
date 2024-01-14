@@ -7,11 +7,13 @@ export default function Component() {
   const [images, setImages] = useState([
     '/IMG_8612.JPG', 
     '/IMG_8624.JPG', 
-    '/IMG_8604.JPG', 
-    '/IMG_8595.JPG', 
+
     '/IMG_8588.JPG', 
-    '/IMG_8583.JPG',
+    '/IMG_8604.JPG', 
     '/IMG_8545.JPG',
+    '/IMG_8583.JPG',
+
+  
     '/IMG_8560.JPG', 
   ]); // Add your image pathss
   const [photoIndex, setPhotoIndex] = useState(0);
