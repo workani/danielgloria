@@ -5,13 +5,12 @@ import { FaPlay, FaStop } from 'react-icons/fa';
 
 export default function Component() {
   const [images, setImages] = useState([
-     '/IMG_8624.JPG',
+    '/IMG_8624.JPG',
     '/IMG_8612.JPG',
-     '/IMG_8588.JPG',
+    '/IMG_8588.JPG',
     'IMG_8604.JPG',
     '/IMG_8583.JPG',
     '/IMG_8545.JPG',
-    
     '/IMG_8560.JPG',
     '/IMG_8548.JPG',
   ]);
@@ -22,7 +21,6 @@ export default function Component() {
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
- 
   useEffect(() => {
     const newAudio = new Audio('https://danielgloria.vercel.app/song.aac');
     newAudio.addEventListener('loadeddata', () => {
@@ -41,30 +39,18 @@ export default function Component() {
     };
   }, []);
 
-
   useEffect(() => {
     if (audio) {
-      const playAudio = async () => {
-        try {
-          await audio.play();
-          setIsPlaying(true);
-        } catch (error) {
-          console.error("Audio play error:", error);
-        }
-      };
-
       const updateTime = () => {
         setSongTime({ currentTime: audio.currentTime, duration: audio.duration });
       };
 
       const handleAudioEnd = () => setIsPlaying(false);
 
-      audio.addEventListener('canplaythrough', playAudio);
       audio.addEventListener('timeupdate', updateTime);
       audio.addEventListener('ended', handleAudioEnd);
 
       return () => {
-        audio.removeEventListener('canplaythrough', playAudio);
         audio.removeEventListener('timeupdate', updateTime);
         audio.removeEventListener('ended', handleAudioEnd);
       }
@@ -95,7 +81,7 @@ export default function Component() {
   const togglePlay = () => {
     if (audio) {
       if (audio.paused) {
-        audio.play().catch((error) => console.error("Error playing audio:", error));
+        audio.play();
         setIsPlaying(true);
       } else {
         audio.pause();
@@ -103,6 +89,7 @@ export default function Component() {
       }
     }
   };
+
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-pink-300 via-red-500 to-yellow-500">
