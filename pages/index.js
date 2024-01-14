@@ -21,9 +21,9 @@ export default function Component() {
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
 
   useEffect(() => {
-    const newAudio = new Audio('/song.aac');
+    const newAudio = new Audio('/song.mp3');
     newAudio.addEventListener('loadeddata', () => {
-      setAudio(newAudio);
+      setAudio(newAudio);9
       setSongTime({ ...songTime, duration: newAudio.duration });
     });
 
@@ -82,37 +82,65 @@ export default function Component() {
   
  
 
-  // Define the state to hold the relationship duration
-  const [relationshipDuration, setRelationshipDuration] = useState({
-    days: 'XX',
-    hours: 'XX',
-    minutes: 'XX',
-  });
+ // Function to calculate the number of full months between two dates
+const calculateMonths = (startDate, endDate) => {
+  let months;
+  months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+  months -= startDate.getMonth();
+  months += endDate.getMonth();
+  return months <= 0 ? 0 : months;
+};
 
-  // Function to calculate the time difference
-  const calculateTimeLeft = () => {
-    const startDate = new Date('2023-09-29'); // Replace with your relationship start date
-    const currentDate = new Date();
-    const differenceInTime = currentDate - startDate;
+const calculateRemainingDays = (startDate, months) => {
+  const adjustedDate = new Date(startDate);
+  adjustedDate.setMonth(adjustedDate.getMonth() + months);
+  adjustedDate.setDate(startDate.getDate()); // Ensure we compare the same day of the month
+  const currentDate = new Date();
 
-    return {
-      days: Math.floor(differenceInTime / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((differenceInTime / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((differenceInTime / 1000 / 60) % 60),
-    };
+  // If the adjusted date is in the future, we've gone one month too far
+  if (adjustedDate > currentDate) {
+    adjustedDate.setMonth(adjustedDate.getMonth() - 1); // Step back one month
+  }
+
+  const differenceInTime = currentDate - adjustedDate;
+  const days = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
+  return days;
+};
+
+// Function to calculate the relationship duration
+const calculateRelationshipDuration = () => {
+  const startDate = new Date('2023-09-29'); // Replace with your relationship start date
+  const currentDate = new Date();
+
+  const months = calculateMonths(startDate, currentDate);
+  const days = calculateRemainingDays(startDate, months);
+
+  return {
+    months: months.toString(), // Convert to string to match the state structure
+    days: days.toString()      // Convert to string to match the state structure
+  };
+};
+
+// Effect hook to update the relationship duration
+useEffect(() => {
+  const updateDuration = () => {
+    setRelationshipDuration(calculateRelationshipDuration());
   };
 
-  // Effect hook to update the relationship duration
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setRelationshipDuration(calculateTimeLeft());
-    }, 60000); // Update every minute
+  // Set the initial duration immediately on component mount
+  updateDuration();
 
-    // Set the initial duration immediately on component mount
-    setRelationshipDuration(calculateTimeLeft());
+  // Update the duration every minute
+  const timer = setInterval(updateDuration, 60000);
 
-    return () => clearInterval(timer);
-  }, []);
+  return () => clearInterval(timer);
+}, []);
+  
+ 
+const [relationshipDuration, setRelationshipDuration] = useState({
+  days: 'XX',
+  months: 'XX',
+});
 
 
 
@@ -200,27 +228,24 @@ export default function Component() {
         {/* Relationship Timeline Section */}
       
         <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">We are together for:</h2>
-      
-          <main className="flex flex-col items-center justify-center space-y-5 sm:space-y-10">
-            <div className="countdown-container grid grid-cols-2 sm:grid-cols-3 text-center gap-4 justify-center">
-              <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
-              <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.days}</p>
-                <p className="text-xl sm:text-2xl text-gray-300">Days</p>
-              </div>
-              <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
-                <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.hours}</p>
-                <p className="text-xl sm:text-2xl text-gray-300">Hours</p>
-              </div>
-              <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
-                <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.minutes}</p>
-                <p className="text-xl sm:text-2xl text-gray-300">Minutes</p>
-              </div>
-            </div>
-          </main>
+  <div className="container px-4 md:px-6">
+    <h2 className="text-3xl font-bold text-white text-center mb-8">We are together for:</h2>
+
+    <main className="flex flex-col items-center justify-center space-y-5 sm:space-y-10">
+      <div className="countdown-container grid grid-cols-2 sm:grid-cols-2 text-center gap-4 justify-center">
+        <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
+          <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.months}</p>
+          <p className="text-xl sm:text-2xl text-gray-300">Months</p>
         </div>
-      </section>
+        <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-4">
+          <p className="text-5xl sm:text-7xl font-bold text-white mb-2">{relationshipDuration.days}</p>
+          <p className="text-xl sm:text-2xl text-gray-300">Days</p>
+        </div>
+        {/* Removed the minutes div */}
+      </div>
+    </main>
+  </div>
+</section>
     </main>
   );
 }
