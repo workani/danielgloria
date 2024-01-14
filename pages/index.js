@@ -218,7 +218,7 @@ export default function Component() {
                 <p className="text-xl sm:text-2xl text-gray-300">Minutes</p>
               </div>
             </div>
-          </main>s
+          </main>
         </div>
       </section>
     </main>
