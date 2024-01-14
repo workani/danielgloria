@@ -22,7 +22,7 @@ export default function Component() {
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
   useEffect(() => {
-    const newAudio = new Audio('https://danielgloria.vercel.app/song.aac');
+    const newAudio = new Audio('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3');
     newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
       setSongTime({ ...songTime, duration: newAudio.duration });
@@ -81,14 +81,19 @@ export default function Component() {
   const togglePlay = () => {
     if (audio) {
       if (audio.paused) {
-        audio.play();
-        setIsPlaying(true);
+        audio.play().then(() => {
+          setIsPlaying(true);
+        }).catch(error => {
+          console.error("Playback was prevented:", error);
+          // Handle the error, show message to user, etc.
+        });
       } else {
         audio.pause();
         setIsPlaying(false);
       }
     }
   };
+  
 
 
   return (
