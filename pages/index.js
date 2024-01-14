@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import { FaPlay, FaStop } from 'react-icons/fa';
@@ -16,55 +16,50 @@ export default function Component() {
   ]);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [audio, setAudio] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
 
-  useEffect(() => {
-    const newAudio = new Audio('/song.mp3');
-    newAudio.addEventListener('loadeddata', () => {
-      setAudio(newAudio);9
-      setSongTime({ ...songTime, duration: newAudio.duration });
-    });
-
-    newAudio.addEventListener('error', (e) => {
-      console.error("Error with audio playback:", e);
-      console.error("Error code:", e.target.error.code);
-    });
-
-    return () => {
-      newAudio.removeEventListener('loadeddata', () => {});
-      newAudio.removeEventListener('error', () => {});
-    };
-  }, []);
-
-  useEffect(() => {
-    if (audio) {
-      const updateTime = () => {
-        setSongTime({ currentTime: audio.currentTime, duration: audio.duration });
-      };
-
-      const handleAudioEnd = () => setIsPlaying(false);
-
-      audio.addEventListener('timeupdate', updateTime);
-      audio.addEventListener('ended', handleAudioEnd);
-
-      return () => {
-        audio.removeEventListener('timeupdate', updateTime);
-        audio.removeEventListener('ended', handleAudioEnd);
-      }
-    }
-  }, [audio]);
+  const audioRef = useRef(null); // Создаем ref для аудио элемента
 
 
 
   const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    const pad = (num, size) => num.toString().padStart(size, '0');
+    const minutes = pad(Math.floor(seconds / 60), 2);
+    const secondsLeft = pad(Math.floor(seconds % 60), 2);
+    return `${minutes}:${secondsLeft}`;
   };
 
+  const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Это будет внутри вашего useEffect, который отвечает за добавление и удаление обработчиков событий
+useEffect(() => {
+  // ... другие обработчики событий
+
+  const audio = audioRef.current;
+  if (audio) {
+    // Обновляем продолжительность песни, когда метаданные загружены
+    const handleLoadedMetadata = () => {
+      setSongTime({ ...songTime, duration: audio.duration });
+    };
+
+    // Обновляем текущее время воспроизведения
+    const handleTimeUpdate = () => {
+      setSongTime({ ...songTime, currentTime: audio.currentTime });
+    };
+
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+
+    // Удаляем обработчики событий при размонтировании компонента
+    return () => {
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }
+}, [audioRef, songTime]);
+
   const togglePlay = () => {
+    const audio = audioRef.current;
     if (audio) {
       if (audio.paused) {
         audio.play().then(() => {
@@ -79,8 +74,6 @@ export default function Component() {
       }
     }
   };
-  
- 
 
  // Function to calculate the number of full months between two dates
 const calculateMonths = (startDate, endDate) => {
@@ -181,50 +174,68 @@ const [relationshipDuration, setRelationshipDuration] = useState({
       </section>
       
       {/* Love Song Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">Our Love Song</h2>
-          <div className="flex justify-center">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-2xl font-bold text-red-500 mb-4">Rewrite the stars</h3>
-              <div className="flex items-center mb-4">
-                <img
-                  alt="Album cover"
-                  className="rounded-full"
-                  height="60"
-                  width="60"
-                  src="/SongCover.jpg"
-                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-                />
-                <div className="ml-4">
-                  <h5 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">Anne-Marie & James Arthur</h5>
-                  <p className=" font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-900">
-                    The Greatest Showman: Reimagined
-                  </p>
-                </div>
-              </div>
-              <div className="bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-red-500 rounded-full h-2"
-                  style={{ width: `${(songTime.currentTime / songTime.duration) * 100}%` }}
-                />
-              </div>
-              <div className="flex items-center justify-between mt-4">
-                <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
-                <p className="text-gray-500">{formatTime(songTime.duration)}</p>
-              </div>
-              <button
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition duration-300 mt-4 flex items-center justify-center"
-                onClick={togglePlay}
-              >
-                {isPlaying ? <FaStop size={20} /> : <FaPlay size={20} />}
-                <span className="ml-2">{isPlaying ? 'Stop' : 'Play'} Song</span>
-              </button>
-            </div>
+<section className="w-full py-12 md:py-24 lg:py-32">
+  <div className="container px-4 md:px-6">
+    <h2 className="text-3xl font-bold text-white text-center mb-8">Our Love Song</h2>
+    <div className="flex justify-center">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Rewrite the stars</h3>
+        <div className="flex items-center mb-4">
+          <img
+            alt="Album cover"
+            className="rounded-full"
+            height="60"
+            width="60"
+            src="/SongCover.jpg"
+            style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+          />
+          <div className="ml-4">
+            <h5 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">Anne-Marie & James Arthur</h5>
+            <p className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-900">
+              The Greatest Showman: Reimagined
+            </p>
           </div>
         </div>
-      </section>
-
+        <div className="bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-red-500 rounded-full h-2"
+            style={{ width: `${(songTime.currentTime / songTime.duration) * 100}%` }}
+          />
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
+          <p className="text-gray-500">{formatTime(songTime.duration)}</p>
+        </div>
+        <button
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition duration-300 mt-4 flex items-center justify-center"
+          onClick={togglePlay}
+        >
+          {isPlaying ? <FaStop size={20} /> : <FaPlay size={20} />}
+          <span className="ml-2">{isPlaying ? 'Stop' : 'Play'} Song</span>
+        </button>
+        <audio
+          ref={audioRef}
+          src="/song.mp3" // Замените на путь к вашему аудиофайлу
+          onLoadedMetadata={() => {
+            // Обновляем продолжительность песни, когда метаданные загружены
+            setSongTime((prevSongTime) => ({
+              ...prevSongTime,
+              duration: audioRef.current.duration,
+            }));
+          }}
+          onTimeUpdate={() => {
+            // Обновляем текущее время воспроизведения
+            setSongTime((prevSongTime) => ({
+              ...prevSongTime,
+              currentTime: audioRef.current.currentTime,
+            }));
+          }}
+          onEnded={() => setIsPlaying(false)}
+        />
+      </div>
+    </div>
+  </div>
+</section>
         {/* Relationship Timeline Section */}
       
         <section className="w-full py-12 md:py-24 lg:py-32">
