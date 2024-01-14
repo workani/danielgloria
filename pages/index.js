@@ -105,43 +105,44 @@ export default function Component() {
       </section>
       
       {/* Love Song Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">Our Love Song</h2>
-          <div className="flex justify-center">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-2xl font-bold text-red-500 mb-4">Our Song Title</h3>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center">
-                  <img
-                    alt="Album cover"
-                    className="rounded-full"
-                    height="50"
-                    src="/images/album-cover.jpg" // Local album cover image path
-                    style={{ aspectRatio: "50/50", objectFit: "cover" }}
-                    width="50"
-                  />
-                  <div className="ml-4">
-                    <h4 className="text-lg font-semibold">Artist Name</h4>
-                    <p className="text-gray-500">Album Name</p>
-                  </div>
-                </div>
-                {/* Audio Progress Bar */}
-                <div className="bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-red-500 rounded-full h-2"
-                    style={{ width: `${(songTime.currentTime / songTime.duration) * 100}%` }}
-                  />
-                </div>
-                <div className="flex items-center justify-between mt-4">
-                  <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
-                  <p className="text-gray-500">{formatTime(songTime.duration)}</p>
-                </div>
-              </div>
+<section className="w-full py-12 md:py-24 lg:py-32">
+  <div className="container px-4 md:px-6">
+    <h2 className="text-3xl font-bold text-white text-center mb-8">Our Love Song</h2>
+    <div className="flex justify-center">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Rewrite the stars</h3>
+        <div className="flex items-center mb-4">
+          <img
+            alt="Album cover"
+            className="rounded-full"
+            height="60"
+            width="60"
+            src="/SongCover.jpg" // Replace with your album cover image path
+            style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+
+          />
+       <div className="ml-4">
+          <h5 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">Anne-Marie &James Arthur</h5>
+              <p className=" font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-900">
+              The Greatest Showman: Reimagined
+                   </p>
             </div>
-          </div>
         </div>
-      </section>
+        <div className="bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-red-500 rounded-full h-2"
+            style={{ width: `${(songTime.currentTime / songTime.duration) * 100}%` }}
+          />
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
+          <p className="text-gray-500">{formatTime(songTime.duration)}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* Relationship Timeline Section */}
       <section className="w-full py-12 md:py-24 lg:py-32">
