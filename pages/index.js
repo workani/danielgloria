@@ -74,30 +74,26 @@ useEffect(() => {
       }
     }
   };
-
- // Function to calculate the number of full months between two dates
+// Function to calculate the number of full months between two dates
 const calculateMonths = (startDate, endDate) => {
   let months;
   months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
   months -= startDate.getMonth();
   months += endDate.getMonth();
+  if (endDate.getDate() < startDate.getDate()) {
+    months--;
+  }
   return months <= 0 ? 0 : months;
 };
 
 const calculateRemainingDays = (startDate, months) => {
-  const adjustedDate = new Date(startDate);
-  adjustedDate.setMonth(adjustedDate.getMonth() + months);
+  const adjustedDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, startDate.getDate());
   const currentDate = new Date();
 
-  // Если день месяца в adjustedDate больше, чем в startDate, это означает, что мы перешли на следующий месяц
-  // Например, начальная дата 31 января + 1 месяц = 28 (или 29) февраля, а не 31 февраля
-  if (adjustedDate.getDate() !== startDate.getDate()) {
-    adjustedDate.setDate(0); // Переходим к последнему дню предыдущего месяца
-  }
-
+  // Calculate the difference in days
   const differenceInTime = currentDate - adjustedDate;
   const days = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
-  return days;
+  return days >= 0 ? days : 0;
 };
 
 // Function to calculate the relationship duration
@@ -109,10 +105,11 @@ const calculateRelationshipDuration = () => {
   const days = calculateRemainingDays(startDate, months);
 
   return {
-    months: months.toString(), // Convert to string to match the state structure
-    days: days.toString()      // Convert to string to match the state structure
+    months: months.toString(), // Convert to string for consistency
+    days: days.toString()      // Convert to string for consistency
   };
 };
+
 
 // Effect hook to update the relationship duration
 useEffect(() => {
