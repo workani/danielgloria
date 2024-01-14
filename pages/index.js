@@ -1,32 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import Lightbox from 'react-image-lightbox'; 
-import 'react-image-lightbox/style.css'; 
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 export default function Component() {
-  // States for Photo Gallery
   const [images, setImages] = useState([
-    '/IMG_8612.JPG', 
-    '/IMG_8624.JPG', 
-
-    '/IMG_8588.JPG', 
-    '/IMG_8604.JPG', 
-    '/IMG_8545.JPG',
+     '/IMG_8624.JPG',
+    '/IMG_8612.JPG',
+     '/IMG_8588.JPG',
+    'IMG_8604.JPG',
     '/IMG_8583.JPG',
-
-  
-    '/IMG_8560.JPG', 
-  ]); // Add your image pathss
+    '/IMG_8545.JPG',
+    
+    '/IMG_8560.JPG',
+    '/IMG_8548.JPG',
+  ]);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-
-  // State for audio playback and song time
   const [audio, setAudio] = useState(null);
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
-
-  // State for relationship duration
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
-  // Initialize audio on the client-side
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const newAudio = new Audio('/song.mp3');
@@ -34,22 +27,28 @@ export default function Component() {
     }
   }, []);
 
-  // Effect for managing audio playback
   useEffect(() => {
     if (audio) {
-      audio.play().catch(error => console.log("Audio play error:", error));
+      const playAudio = async () => {
+        try {
+          await audio.play()
+        } catch (error) {
+          console.error("Audio play error:", error);
+        }
+      };
+      playAudio();
+
       const updateTime = () => {
         setSongTime({ currentTime: audio.currentTime, duration: audio.duration });
       };
+
       audio.addEventListener('timeupdate', updateTime);
       return () => audio.removeEventListener('timeupdate', updateTime);
     }
   }, [audio]);
 
-  // Calculate relationship duration
   useEffect(() => {
     const calculateDuration = () => {
-      // Add your start date
       const startDate = new Date('2020-01-01');
       const currentDate = new Date();
       const differenceInTime = currentDate.getTime() - startDate.getTime();
@@ -63,7 +62,6 @@ export default function Component() {
     setRelationshipDuration(calculateDuration());
   }, []);
 
-  // Utility function to format time in mm:ss
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -107,44 +105,42 @@ export default function Component() {
       </section>
       
       {/* Love Song Section */}
-<section className="w-full py-12 md:py-24 lg:py-32">
-  <div className="container px-4 md:px-6">
-    <h2 className="text-3xl font-bold text-white text-center mb-8">Our Love Song</h2>
-    <div className="flex justify-center">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-2xl font-bold text-red-500 mb-4">Rewrite the stars</h3>
-        <div className="flex items-center mb-4">
-          <img
-            alt="Album cover"
-            className="rounded-full"
-            height="60"
-            width="60"
-            src="/SongCover.jpg" // Replace with your album cover image path
-            style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-
-          />
-       <div className="ml-4">
-          <h5 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">Anne-Marie &James Arthur</h5>
-              <p className=" font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-900">
-              The Greatest Showman: Reimagined
-                   </p>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold text-white text-center mb-8">Our Love Song</h2>
+          <div className="flex justify-center">
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-2xl font-bold text-red-500 mb-4">Rewrite the stars</h3>
+              <div className="flex items-center mb-4">
+                <img
+                  alt="Album cover"
+                  className="rounded-full"
+                  height="60"
+                  width="60"
+                  src="/SongCover.jpg"
+                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                />
+                <div className="ml-4">
+                  <h5 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">Anne-Marie & James Arthur</h5>
+                  <p className=" font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-900">
+                    The Greatest Showman: Reimagined
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-red-500 rounded-full h-2"
+                  style={{ width: `${(songTime.currentTime / songTime.duration) * 100}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
+                <p className="text-gray-500">{formatTime(songTime.duration)}</p>
+              </div>
             </div>
+          </div>
         </div>
-        <div className="bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-red-500 rounded-full h-2"
-            style={{ width: `${(songTime.currentTime / songTime.duration) * 100}%` }}
-          />
-        </div>
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-gray-500">{formatTime(songTime.currentTime)}</p>
-          <p className="text-gray-500">{formatTime(songTime.duration)}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+      </section>
 
       {/* Relationship Timeline Section */}
       <section className="w-full py-12 md:py-24 lg:py-32">
