@@ -22,7 +22,7 @@ export default function Component() {
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
   useEffect(() => {
-    const newAudio = new Audio('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3');
+    const newAudio = new Audio('https://danielgloria.vercel.app/song.');
     newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
       setSongTime({ ...songTime, duration: newAudio.duration });
