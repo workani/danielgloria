@@ -27,7 +27,7 @@ export default function Component() {
   // Initialize audio on the client-side
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const newAudio = new Audio('/audio/love-song.mp3');
+      const newAudio = new Audio('/song.mp3');
       setAudio(newAudio);
     }
   }, []);
