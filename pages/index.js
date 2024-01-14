@@ -22,13 +22,12 @@ export default function Component() {
   const [songTime, setSongTime] = useState({ currentTime: 0, duration: 0 });
   const [relationshipDuration, setRelationshipDuration] = useState({ months: 0, days: 0 });
 
+ 
   useEffect(() => {
-    const newAudio = new Audio('/song.aac');
+    const newAudio = new Audio('https://danielgloria.vercel.app/song.aac');
     newAudio.addEventListener('loadeddata', () => {
       setAudio(newAudio);
       setSongTime({ ...songTime, duration: newAudio.duration });
-      // Attempt to autoplay
-      newAudio.play().catch(error => console.error("Ошибка автовоспроизведения:", error));
     });
 
     newAudio.addEventListener('error', (e) => {
@@ -41,6 +40,7 @@ export default function Component() {
       newAudio.removeEventListener('error', () => {});
     };
   }, []);
+
 
   useEffect(() => {
     if (audio) {
