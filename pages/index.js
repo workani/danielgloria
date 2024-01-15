@@ -133,32 +133,29 @@ const [relationshipDuration, setRelationshipDuration] = useState({
   months: 'XX',
 });
 
-// Prevent site from showing up on desktop & tablets
- 
 useEffect(() => {
   const updateVisibility = () => {
-    // Adjust the threshold to 600px to include tablets
+    // Adjust the threshold to include tablets
     const isTabletOrDesktop = window.innerWidth >= 600;
     const content = document.getElementById('content');
     const message = document.getElementById('desktop-message');
 
     if (isTabletOrDesktop) {
-      content.classList.add('hide-on-desktop');
-      message.style.display = 'block';
+      content.style.display = 'none'; // Hide the main content on desktop and tablet
+      message.style.display = 'block'; // Show the desktop message
     } else {
-      content.classList.remove('hide-on-desktop');
-      message.style.display = 'none';
+      content.style.display = 'block'; // Show the main content on mobile
+      message.style.display = 'none'; // Hide the desktop message
     }
   };
 
-  updateVisibility();
-  window.addEventListener('resize', updateVisibility);
+  updateVisibility(); // Call the function initially to set the correct visibility on load
+  window.addEventListener('resize', updateVisibility); // Add event listener for window resize
 
   return () => {
-    window.removeEventListener('resize', updateVisibility);
+    window.removeEventListener('resize', updateVisibility); // Clean up the event listener
   };
 }, []);
-
 
 //scrolling animation
 
@@ -316,31 +313,31 @@ useEffect(() => {
   </div>
 </section>
 </div>
+
+<section className="w-full py-12 md:py-24 lg:py-32">
+  <div className="container px-4 md:px-6">
+    <h2 className="text-3xl font-bold text-white text-center mb-8">✨Our Relationship Aesthetic✨</h2>
+    <div className="flex justify-center">
+      <div className="w-full max-w-2xl">
+        <img
+          alt="Special moment"
+          className="rounded-lg shadow-md"
+          height="600"
+          src="/collage.png"
+          style={{ aspectRatio: "4:3", objectFit: "cover" }}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
 <div id="desktop-message" className="desktop-message text-2xl text-center" style={{ display: 'none' }}>
-        Unfortunately, this site is unavailable on tablets and desktops. Please, visit it on your phone.
-      </div>
-      </div>
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">✨Our relationship aesthetic✨</h2>
-          <div className="flex justify-center">
-            <div className="w-full max-w-2xl">
-              <img
-                alt="Special moment"
-                className="rounded-lg shadow-md"
-                height="600"
-                src="/collage.png"
-                style={{
-                  aspectRatio: "4:3",
-                  objectFit: "cover",
-                }}
-             
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-      <p className="text-sm text-gray-300">© 2024 workand.dev</p>
-    </main>
-  );
+  Unfortunately, this site is unavailable on tablets and desktops. Please, visit it on your phone.
+   </div>
+   <footer className="text-center text-sm text-gray-300 mt-4">
+  © 2024 workand.dev
+</footer>
+</main>
+);
 }
