@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import { FaPlay, FaStop } from 'react-icons/fa';
+import AOS from 'aos';
 
 export default function Component() {
   const [images, setImages] = useState([
@@ -158,10 +159,27 @@ useEffect(() => {
   };
 }, []);
 
+
+//scrolling animation
+
+useEffect(() => {
+  AOS.init({
+    // Global settings:
+    duration: 600, // values from 0 to 3000, with step 50ms
+    once: false, // whether animation should happen only once - while scrolling down
+    // other options can be found in the documentation
+  });
+}, []);
+
+
+
   return (
      <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-black to-purple-900">
       <div id="content">
+      <div data-aos="fade-up">
 
+
+        {/*photo collage section */}
       {/*letter for section Section */}
       <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
@@ -301,6 +319,28 @@ useEffect(() => {
 <div id="desktop-message" className="desktop-message text-2xl text-center" style={{ display: 'none' }}>
         Unfortunately, this site is unavailable on tablets and desktops. Please, visit it on your phone.
       </div>
+      </div>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold text-white text-center mb-8">✨Our relationship aesthetic✨</h2>
+          <div className="flex justify-center">
+            <div className="w-full max-w-2xl">
+              <img
+                alt="Special moment"
+                className="rounded-lg shadow-md"
+                height="600"
+                src="/collage.png"
+                style={{
+                  aspectRatio: "4:3",
+                  objectFit: "cover",
+                }}
+             
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <p className="text-sm text-gray-300">© 2024 workand.dev</p>
     </main>
   );
 }
