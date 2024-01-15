@@ -25,3 +25,15 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.hide-on-desktop {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+  .desktop-message {
+    display: block;
+    text-align: center;
+    color: white;
+  }
+}

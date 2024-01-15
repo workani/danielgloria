@@ -132,10 +132,35 @@ const [relationshipDuration, setRelationshipDuration] = useState({
   months: 'XX',
 });
 
+// Prevent site from showing up on desktop & tablets
+ 
+useEffect(() => {
+  const updateVisibility = () => {
+    // Adjust the threshold to 600px to include tablets
+    const isTabletOrDesktop = window.innerWidth >= 600;
+    const content = document.getElementById('content');
+    const message = document.getElementById('desktop-message');
 
+    if (isTabletOrDesktop) {
+      content.classList.add('hide-on-desktop');
+      message.style.display = 'block';
+    } else {
+      content.classList.remove('hide-on-desktop');
+      message.style.display = 'none';
+    }
+  };
+
+  updateVisibility();
+  window.addEventListener('resize', updateVisibility);
+
+  return () => {
+    window.removeEventListener('resize', updateVisibility);
+  };
+}, []);
 
   return (
      <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-black to-purple-900">
+      <div id="content">
       {/* Photo Gallery Section */}
       <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
@@ -254,6 +279,10 @@ const [relationshipDuration, setRelationshipDuration] = useState({
     </main>
   </div>
 </section>
+</div>
+<div id="desktop-message" className="desktop-message text-2xl text-center" style={{ display: 'none' }}>
+        Unfortunately, this site is unavailable on tablets and desktops. Please, visit it on your phone.
+      </div>
     </main>
   );
 }
