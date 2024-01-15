@@ -161,6 +161,24 @@ useEffect(() => {
   return (
      <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-black to-purple-900">
       <div id="content">
+
+      {/*letter for section Section */}
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold text-white text-center mb-8">Our Gorgeous Love</h2>
+          <div className="flex justify-center">
+            <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
+              <h3 className="text-2xl font-bold text-red-500 mb-4">To My Love</h3>
+              <p className="text-gray-300">
+                My love, I want to express my feelings for you through this letter. I cannot imagine my life without
+                you. You are the reason for my happiness and truly one of the most beautiful persons I have or will ever
+                meet in a long time. I love you.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Photo Gallery Section */}
       <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
